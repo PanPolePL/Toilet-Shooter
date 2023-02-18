@@ -27,8 +27,8 @@ public class JavaGame extends ApplicationAdapter {
 		if(ammo.x+ammo.width/2>=enemy.x && ammo.x<=enemy.x+enemy.width+ammo.width/2 && ammo.y+ammo.height>=enemy.y)
 		{
 			ammo.y=9999;
-			explosion.x=enemy.x+enemy.width/2;
-			explosion.y=enemy.y+enemy.height/2;
+			explosion.x=enemy.x;
+			explosion.y=enemy.y;
 			i=0;
 			return true;
 		}
