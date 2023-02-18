@@ -15,7 +15,23 @@ public class JavaGame extends ApplicationAdapter {
 	Texture playerImage;
 	Rectangle ammo;
 	Texture ammoImage;
-	
+	Rectangle enemy;
+	Texture enemyImage;
+
+	public boolean collision_check(){
+		if(ammo.x>=enemy.x && ammo.x<=enemy.x+enemy.width && ammo.y+ammo.height>=enemy.y)
+		{
+			ammo.y=9999;
+			return true;
+		}
+		return false;
+	}
+
+	public void fire(){
+		ammo.x=player.x+50;
+		ammo.y=player.y+player.height;
+	}
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -32,6 +48,13 @@ public class JavaGame extends ApplicationAdapter {
 		ammo.y = 9999;
 		ammo.width = 70;
 		ammo.height = 70;
+
+		enemyImage = new Texture(Gdx.files.internal("enemy.png"));
+		enemy = new Rectangle();
+		enemy.x = 512;
+		enemy.y = 720+enemy.height;
+		enemy.width = 70;
+		enemy.height = 70;
 	}
 
 	@Override
@@ -40,6 +63,7 @@ public class JavaGame extends ApplicationAdapter {
 		batch.begin();
 		batch.draw(playerImage, player.x, player.y);
 		batch.draw(ammoImage, ammo.x, ammo.y);
+		batch.draw(enemyImage, enemy.x, enemy.y);
 		batch.end();
 
 		//user input
@@ -57,8 +81,10 @@ public class JavaGame extends ApplicationAdapter {
 		//firing
 		if(Gdx.input.isKeyJustPressed(Input.Keys.F)) {
 			if(ammo.y >= 720 + ammo.height) {
-				ammo.x=player.x+50;
-				ammo.y=player.y+player.height;
+				fire();
+			}
+			else if(collision_check()) {
+				fire();
 			}
 		}
 
@@ -68,8 +94,16 @@ public class JavaGame extends ApplicationAdapter {
 		//if(player.y < 0) player.y = 0;
 		//if(player.y > 720-player.width) player.y = 720-player.width;
 
-		//ammo
-		ammo.y+=10;
+		ammo.y+=500*Gdx.graphics.getDeltaTime();
+
+		//enemy movement
+		enemy.y-=100*Gdx.graphics.getDeltaTime();
+		if(collision_check()) {
+			enemy.y=720+enemy.height;
+			enemy.x=(int)(Math.random() * 1280-2*enemy.width) + enemy.width;
+		}
+
+		collision_check();
 	}
 	
 	@Override
