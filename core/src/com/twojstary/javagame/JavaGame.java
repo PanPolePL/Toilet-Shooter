@@ -17,11 +17,19 @@ public class JavaGame extends ApplicationAdapter {
 	Texture ammoImage;
 	Rectangle enemy;
 	Texture enemyImage;
+	Rectangle explosion;
+	Texture[] explosionImages = new Texture[26];
+	Texture explosionImage;
+	boolean gameInProgress;
+	int i=0;
 
 	public boolean collision_check(){
-		if(ammo.x>=enemy.x && ammo.x<=enemy.x+enemy.width && ammo.y+ammo.height>=enemy.y)
+		if(ammo.x+ammo.width/2>=enemy.x && ammo.x<=enemy.x+enemy.width+ammo.width/2 && ammo.y+ammo.height>=enemy.y)
 		{
 			ammo.y=9999;
+			explosion.x=enemy.x+enemy.width/2;
+			explosion.y=enemy.y+enemy.height/2;
+			i=0;
 			return true;
 		}
 		return false;
@@ -55,6 +63,18 @@ public class JavaGame extends ApplicationAdapter {
 		enemy.y = 720+enemy.height;
 		enemy.width = 70;
 		enemy.height = 70;
+
+		explosion = new Rectangle();
+		explosion.x = 512;
+		explosion.y = 9999;
+		explosion.width = 200;
+		explosion.height = 200;
+		for(int i=0; i<=25; i++) {
+			explosionImages[i] = new Texture(Gdx.files.internal("explosion/explosion" + i + ".png"));
+		}
+		explosionImage=explosionImages[0];
+
+		gameInProgress = true;
 	}
 
 	@Override
@@ -64,6 +84,7 @@ public class JavaGame extends ApplicationAdapter {
 		batch.draw(playerImage, player.x, player.y);
 		batch.draw(ammoImage, ammo.x, ammo.y);
 		batch.draw(enemyImage, enemy.x, enemy.y);
+		batch.draw(explosionImage, explosion.x, explosion.y);
 		batch.end();
 
 		//user input
@@ -94,21 +115,39 @@ public class JavaGame extends ApplicationAdapter {
 		//if(player.y < 0) player.y = 0;
 		//if(player.y > 720-player.width) player.y = 720-player.width;
 
-		ammo.y+=500*Gdx.graphics.getDeltaTime();
+		if(gameInProgress) ammo.y+=500*Gdx.graphics.getDeltaTime();
 
 		//enemy movement
-		enemy.y-=100*Gdx.graphics.getDeltaTime();
+		if(gameInProgress) enemy.y-=100*Gdx.graphics.getDeltaTime();
 		if(collision_check()) {
 			enemy.y=720+enemy.height;
 			enemy.x=(int)(Math.random() * 1280-2*enemy.width) + enemy.width;
 		}
 
+		explosionImage=explosionImages[i];
+		i++;
+		if(i==26) {
+			i=0;
+		}
+		if(explosionImage==explosionImages[25]){
+			explosion.x=9999;
+			explosion.y=9999;
+		}
+
 		collision_check();
+
+		//game over
+		if(enemy.y+enemy.height<=0) {
+			gameInProgress=false;
+		}
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
 		playerImage.dispose();
+		enemyImage.dispose();
+		ammoImage.dispose();
+		explosionImage.dispose();
 	}
 }
