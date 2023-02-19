@@ -3,6 +3,7 @@ package com.twojstary.javagame;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -22,10 +23,13 @@ public class JavaGame extends ApplicationAdapter {
 	Texture explosionImage;
 	boolean gameInProgress;
 	int i=0;
+	Sound fireSound;
+	Sound hitSound;
 
 	public boolean collision_check(){
 		if(ammo.x+ammo.width/2>=enemy.x && ammo.x<=enemy.x+enemy.width+ammo.width/2 && ammo.y+ammo.height>=enemy.y)
 		{
+			hitSound.play(1.0f);
 			ammo.y=9999;
 			explosion.x=enemy.x;
 			explosion.y=enemy.y;
@@ -36,6 +40,7 @@ public class JavaGame extends ApplicationAdapter {
 	}
 
 	public void fire(){
+		fireSound.play(1.0f);
 		ammo.x=player.x+50;
 		ammo.y=player.y+player.height;
 	}
@@ -74,6 +79,9 @@ public class JavaGame extends ApplicationAdapter {
 		}
 		explosionImage=explosionImages[0];
 
+		fireSound = Gdx.audio.newSound(Gdx.files.internal("sounds/fire.mp3"));
+		hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/hit.mp3"));
+
 		gameInProgress = true;
 	}
 
@@ -87,12 +95,12 @@ public class JavaGame extends ApplicationAdapter {
 		batch.draw(explosionImage, explosion.x, explosion.y);
 		batch.end();
 
-		//user input
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+		//player movment
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && gameInProgress) {
 			player.x -= 300 * Gdx.graphics.getDeltaTime();
 			playerImage=new Texture(Gdx.files.internal("player_l.png"));
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gameInProgress) {
 			player.x += 300 * Gdx.graphics.getDeltaTime();
 			playerImage=new Texture(Gdx.files.internal("player_r.png"));
 		}
@@ -137,7 +145,7 @@ public class JavaGame extends ApplicationAdapter {
 		collision_check();
 
 		//game over
-		if(enemy.y+enemy.height<=0) {
+		if(enemy.y<=0) {
 			gameInProgress=false;
 		}
 	}
