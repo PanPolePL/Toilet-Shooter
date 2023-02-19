@@ -23,6 +23,7 @@ public class JavaGame extends ApplicationAdapter {
 	Texture[] explosionImages = new Texture[26];
 	Texture explosionImage;
 	boolean gameInProgress;
+	boolean gamePaused;
 	int i=0;
 	Sound fireSound;
 	Sound hitSound;
@@ -95,6 +96,7 @@ public class JavaGame extends ApplicationAdapter {
 		font.setColor(255,255,255,255);
 
 		gameInProgress = true;
+		gamePaused = false;
 	}
 
 	@Override
@@ -106,6 +108,9 @@ public class JavaGame extends ApplicationAdapter {
 		batch.draw(enemyImage, enemy.x, enemy.y);
 		batch.draw(explosionImage, explosion.x, explosion.y);
 		font.draw(batch, "Score: " + score, 10, 20);
+		if(gamePaused) {
+			font.draw(batch, "PAUSED", 560, 360);
+		}
 		batch.end();
 
 		//player movment
@@ -118,8 +123,12 @@ public class JavaGame extends ApplicationAdapter {
 			player.x += 300 * Gdx.graphics.getDeltaTime();
 			playerImage=new Texture(Gdx.files.internal("player_r.png"));
 		}
-		//if(Gdx.input.isKeyPressed(Input.Keys.UP)) player.y += 300 * Gdx.graphics.getDeltaTime();
-		//if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) player.y -= 300 * Gdx.graphics.getDeltaTime();
+
+		//pause
+		if(Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+			gamePaused = !gamePaused;
+			gameInProgress = !gameInProgress;
+		}
 
 		//firing
 		if(Gdx.input.isKeyJustPressed(Input.Keys.F)) {
