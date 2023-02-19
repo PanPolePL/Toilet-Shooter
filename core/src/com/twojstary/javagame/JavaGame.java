@@ -27,8 +27,7 @@ public class JavaGame extends ApplicationAdapter {
 	Sound hitSound;
 
 	public boolean collision_check(){
-		if(ammo.x+ammo.width/2>=enemy.x && ammo.x<=enemy.x+enemy.width+ammo.width/2 && ammo.y+ammo.height>=enemy.y)
-		{
+		if(ammo.x+ammo.width/2>=enemy.x && ammo.x<=enemy.x+enemy.width+ammo.width/2 && ammo.y+ammo.height>=enemy.y) {
 			hitSound.play(1.0f);
 			ammo.y=9999;
 			i=0;
@@ -38,7 +37,9 @@ public class JavaGame extends ApplicationAdapter {
 			enemy.x=(int)(Math.random() * 1280-2*enemy.width) + enemy.width;
 			return true;
 		}
-		return false;
+		else {
+			return false;
+		}
 	}
 
 	public void fire(){
