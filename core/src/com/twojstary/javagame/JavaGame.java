@@ -31,9 +31,11 @@ public class JavaGame extends ApplicationAdapter {
 		{
 			hitSound.play(1.0f);
 			ammo.y=9999;
+			i=0;
 			explosion.x=enemy.x;
 			explosion.y=enemy.y;
-			i=0;
+			enemy.y=720+enemy.height;
+			enemy.x=(int)(Math.random() * 1280-2*enemy.width) + enemy.width;
 			return true;
 		}
 		return false;
@@ -125,12 +127,7 @@ public class JavaGame extends ApplicationAdapter {
 
 		if(gameInProgress) ammo.y+=500*Gdx.graphics.getDeltaTime();
 
-		//enemy movement
 		if(gameInProgress) enemy.y-=100*Gdx.graphics.getDeltaTime();
-		if(collision_check()) {
-			enemy.y=720+enemy.height;
-			enemy.x=(int)(Math.random() * 1280-2*enemy.width) + enemy.width;
-		}
 
 		explosionImage=explosionImages[i];
 		i++;
