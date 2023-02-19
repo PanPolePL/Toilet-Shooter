@@ -109,11 +109,12 @@ public class JavaGame extends ApplicationAdapter {
 		batch.end();
 
 		//player movment
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && gameInProgress) {
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gameInProgress) {}
+		else if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && gameInProgress) {
 			player.x -= 300 * Gdx.graphics.getDeltaTime();
 			playerImage=new Texture(Gdx.files.internal("player_l.png"));
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gameInProgress) {
+		else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gameInProgress) {
 			player.x += 300 * Gdx.graphics.getDeltaTime();
 			playerImage=new Texture(Gdx.files.internal("player_r.png"));
 		}
