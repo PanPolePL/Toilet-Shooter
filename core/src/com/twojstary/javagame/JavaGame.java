@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -25,9 +26,12 @@ public class JavaGame extends ApplicationAdapter {
 	int i=0;
 	Sound fireSound;
 	Sound hitSound;
+	BitmapFont font;
+	int score;
 
 	public boolean collision_check(){
 		if(ammo.x+ammo.width/2>=enemy.x && ammo.x<=enemy.x+enemy.width+ammo.width/2 && ammo.y+ammo.height>=enemy.y) {
+			score++;
 			hitSound.play(1.0f);
 			ammo.y=9999;
 			i=0;
@@ -60,7 +64,7 @@ public class JavaGame extends ApplicationAdapter {
 
 		ammoImage = new Texture(Gdx.files.internal("ammo.png"));
 		ammo = new Rectangle();
-		ammo.x = 512;
+		ammo.x = 9999;
 		ammo.y = 9999;
 		ammo.width = 70;
 		ammo.height = 70;
@@ -85,6 +89,11 @@ public class JavaGame extends ApplicationAdapter {
 		fireSound = Gdx.audio.newSound(Gdx.files.internal("sounds/fire.mp3"));
 		hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/hit.mp3"));
 
+		score=0;
+
+		font = new BitmapFont();
+		font.setColor(255,255,255,255);
+
 		gameInProgress = true;
 	}
 
@@ -96,6 +105,7 @@ public class JavaGame extends ApplicationAdapter {
 		batch.draw(ammoImage, ammo.x, ammo.y);
 		batch.draw(enemyImage, enemy.x, enemy.y);
 		batch.draw(explosionImage, explosion.x, explosion.y);
+		font.draw(batch, "Score: " + score, 10, 20);
 		batch.end();
 
 		//player movment
@@ -155,5 +165,6 @@ public class JavaGame extends ApplicationAdapter {
 		enemyImage.dispose();
 		ammoImage.dispose();
 		explosionImage.dispose();
+		font.dispose();
 	}
 }
