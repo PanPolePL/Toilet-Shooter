@@ -22,8 +22,8 @@ public class JavaGame extends ApplicationAdapter {
 	Rectangle explosion;
 	Texture[] explosionImages = new Texture[26];
 	Texture explosionImage;
-	boolean gameInProgress;
 	boolean gamePaused;
+	boolean gameOver;
 	int i=0;
 	Sound fireSound;
 	Sound hitSound;
@@ -53,35 +53,44 @@ public class JavaGame extends ApplicationAdapter {
 		ammo.y=player.y+player.height;
 	}
 
+	public void set_position() {
+		player.x = 512;
+		player.y = 0;
+
+		ammo.x = 9999;
+		ammo.y = 9999;
+
+		enemy.x = 512;
+		enemy.y = 720+enemy.height;
+
+		explosion.x = 512;
+		explosion.y = 9999;
+	}
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		playerImage = new Texture(Gdx.files.internal("player_r.png"));
 		player = new Rectangle();
-		player.x = 512;
-		player.y = 0;
 		player.width = 150;
 		player.height = 125;
 
 		ammoImage = new Texture(Gdx.files.internal("ammo.png"));
 		ammo = new Rectangle();
-		ammo.x = 9999;
-		ammo.y = 9999;
 		ammo.width = 70;
 		ammo.height = 70;
 
 		enemyImage = new Texture(Gdx.files.internal("enemy.png"));
 		enemy = new Rectangle();
-		enemy.x = 512;
-		enemy.y = 720+enemy.height;
 		enemy.width = 70;
 		enemy.height = 70;
 
 		explosion = new Rectangle();
-		explosion.x = 512;
-		explosion.y = 9999;
 		explosion.width = 200;
 		explosion.height = 200;
+
+		set_position();
+
 		for(int i=0; i<=25; i++) {
 			explosionImages[i] = new Texture(Gdx.files.internal("explosion/explosion" + i + ".png"));
 		}
@@ -95,8 +104,8 @@ public class JavaGame extends ApplicationAdapter {
 		font = new BitmapFont();
 		font.setColor(255,255,255,255);
 
-		gameInProgress = true;
 		gamePaused = false;
+		gameOver = false;
 	}
 
 	@Override
@@ -108,26 +117,34 @@ public class JavaGame extends ApplicationAdapter {
 		batch.draw(enemyImage, enemy.x, enemy.y);
 		batch.draw(explosionImage, explosion.x, explosion.y);
 		font.draw(batch, "Score: " + score, 10, 20);
-		if(gamePaused) {
+		if(gameOver) {
+			font.draw(batch, "GAME OVER", 560, 360);
+			font.draw(batch, "PRESS R TO TRY AGAIN", 560, 340);
+			if(Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+				set_position();
+				gameOver = false;
+				score = 0;
+			}
+		}
+		else if(gamePaused) {
 			font.draw(batch, "PAUSED", 560, 360);
 		}
 		batch.end();
 
-		//player movment
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gameInProgress) {}
-		else if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && gameInProgress) {
+		//player movement
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !gamePaused && !gameOver) {}
+		else if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && !gamePaused && !gameOver) {
 			player.x -= 300 * Gdx.graphics.getDeltaTime();
 			playerImage=new Texture(Gdx.files.internal("player_l.png"));
 		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && gameInProgress) {
+		else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !gamePaused && !gameOver) {
 			player.x += 300 * Gdx.graphics.getDeltaTime();
 			playerImage=new Texture(Gdx.files.internal("player_r.png"));
 		}
 
 		//pause
-		if(Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+		if(Gdx.input.isKeyJustPressed(Input.Keys.P) && !gameOver) {
 			gamePaused = !gamePaused;
-			gameInProgress = !gameInProgress;
 		}
 
 		//firing
@@ -146,9 +163,9 @@ public class JavaGame extends ApplicationAdapter {
 		//if(player.y < 0) player.y = 0;
 		//if(player.y > 720-player.width) player.y = 720-player.width;
 
-		if(gameInProgress) ammo.y+=500*Gdx.graphics.getDeltaTime();
+		if(!gamePaused && !gameOver) ammo.y+=500*Gdx.graphics.getDeltaTime();
 
-		if(gameInProgress) enemy.y-=100*Gdx.graphics.getDeltaTime();
+		if(!gamePaused && !gameOver) enemy.y-=100*Gdx.graphics.getDeltaTime();
 
 		explosionImage=explosionImages[i];
 		i++;
@@ -164,7 +181,7 @@ public class JavaGame extends ApplicationAdapter {
 
 		//game over
 		if(enemy.y<=0) {
-			gameInProgress=false;
+			gameOver=true;
 		}
 	}
 	
