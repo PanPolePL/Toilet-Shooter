@@ -27,6 +27,8 @@ public class JavaGame extends ApplicationAdapter {
 	int i=0;
 	Sound fireSound;
 	Sound hitSound;
+	Sound gameOverSound;
+	boolean soundPlayed;
 	BitmapFont font;
 	int score;
 
@@ -39,7 +41,7 @@ public class JavaGame extends ApplicationAdapter {
 			explosion.x=enemy.x;
 			explosion.y=enemy.y;
 			enemy.y=720+enemy.height;
-			enemy.x=(int)(Math.random() * 1280-2*enemy.width) + enemy.width;
+			enemy.x=(int)(Math.random() * 1280-2*enemy.width-20) + enemy.width+20;
 			return true;
 		}
 		else {
@@ -98,6 +100,7 @@ public class JavaGame extends ApplicationAdapter {
 
 		fireSound = Gdx.audio.newSound(Gdx.files.internal("sounds/fire.mp3"));
 		hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/hit.mp3"));
+		gameOverSound = Gdx.audio.newSound(Gdx.files.internal("sounds/gameOver.mp3"));
 
 		score=0;
 
@@ -106,6 +109,8 @@ public class JavaGame extends ApplicationAdapter {
 
 		gamePaused = false;
 		gameOver = false;
+
+		soundPlayed=false;
 	}
 
 	@Override
@@ -124,6 +129,7 @@ public class JavaGame extends ApplicationAdapter {
 				set_position();
 				gameOver = false;
 				score = 0;
+				soundPlayed=false;
 			}
 		}
 		else if(gamePaused) {
@@ -181,6 +187,10 @@ public class JavaGame extends ApplicationAdapter {
 
 		//game over
 		if(enemy.y<=0) {
+			if(!soundPlayed){
+				gameOverSound.play(1.0f);
+				soundPlayed=!soundPlayed;
+			}
 			gameOver=true;
 		}
 	}

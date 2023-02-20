@@ -8,7 +8,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(75);
-		config.setTitle("java game");
+		config.setTitle("Toilet Shooter");
 		config.setWindowedMode(1280, 720);
 		new Lwjgl3Application(new JavaGame(), config);
 	}
