@@ -41,7 +41,7 @@ public class JavaGame extends ApplicationAdapter {
 			explosion.x=enemy.x;
 			explosion.y=enemy.y;
 			enemy.y=720+enemy.height;
-			enemy.x=(int)(Math.random() * 1280-2*enemy.width-20) + enemy.width+20;
+			enemy.x=(int)(Math.random() * 1280-2*enemy.width-50) + enemy.width+50;
 			return true;
 		}
 		else {
