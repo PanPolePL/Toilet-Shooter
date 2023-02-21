@@ -31,6 +31,8 @@ public class JavaGame extends ApplicationAdapter {
 	boolean soundPlayed;
 	BitmapFont font;
 	int score;
+	int toiletSpeed;
+	boolean bossMode;
 
 	public boolean collision_check(){
 		if(ammo.x+ammo.width/2>=enemy.x && ammo.x<=enemy.x+enemy.width+ammo.width/2 && ammo.y+ammo.height>=enemy.y) {
@@ -56,7 +58,7 @@ public class JavaGame extends ApplicationAdapter {
 		ammo.y=player.y+player.height;
 	}
 
-	public void set_position() {
+	public void reset() {
 		player.x = 512;
 		player.y = 0;
 
@@ -68,6 +70,13 @@ public class JavaGame extends ApplicationAdapter {
 
 		explosion.x = 512;
 		explosion.y = 9999;
+
+		score=0;
+		gamePaused = false;
+		gameOver = false;
+		toiletSpeed=100;
+		bossMode=false;
+		soundPlayed=false;
 	}
 
 	@Override
@@ -92,7 +101,7 @@ public class JavaGame extends ApplicationAdapter {
 		explosion.width = 200;
 		explosion.height = 200;
 
-		set_position();
+		reset();
 
 		for(int i=0; i<=25; i++) {
 			explosionImages[i] = new Texture(Gdx.files.internal("explosion/explosion" + i + ".png"));
@@ -103,15 +112,8 @@ public class JavaGame extends ApplicationAdapter {
 		hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/hit.mp3"));
 		gameOverSound = Gdx.audio.newSound(Gdx.files.internal("sounds/gameOver.mp3"));
 
-		score=0;
-
 		font = new BitmapFont();
 		font.setColor(255,255,255,255);
-
-		gamePaused = false;
-		gameOver = false;
-
-		soundPlayed=false;
 	}
 
 	@Override
@@ -127,10 +129,7 @@ public class JavaGame extends ApplicationAdapter {
 			font.draw(batch, "GAME OVER", 560, 360);
 			font.draw(batch, "PRESS R TO TRY AGAIN", 560, 340);
 			if(Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-				set_position();
-				gameOver = false;
-				score = 0;
-				soundPlayed=false;
+				reset();
 			}
 		}
 		else if(gamePaused) {
@@ -139,13 +138,12 @@ public class JavaGame extends ApplicationAdapter {
 		batch.end();
 
 		//player movement
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !gamePaused && !gameOver) {}
-		else if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && !gamePaused && !gameOver) {
-			player.x -= 300 * Gdx.graphics.getDeltaTime();
+		 if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && !gamePaused && !gameOver && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+			player.x -= 400 * Gdx.graphics.getDeltaTime();
 			playerImage=new Texture(Gdx.files.internal("player_l.png"));
 		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !gamePaused && !gameOver) {
-			player.x += 300 * Gdx.graphics.getDeltaTime();
+		else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !gamePaused && !gameOver && !Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+			player.x += 400 * Gdx.graphics.getDeltaTime();
 			playerImage=new Texture(Gdx.files.internal("player_r.png"));
 		}
 
@@ -155,7 +153,7 @@ public class JavaGame extends ApplicationAdapter {
 		}
 
 		//firing
-		if(Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+		if(Gdx.input.isKeyJustPressed(Input.Keys.F) && !gameOver) {
 			if(ammo.y >= 720 + ammo.height) {
 				fire();
 			}
@@ -172,7 +170,7 @@ public class JavaGame extends ApplicationAdapter {
 
 		if(!gamePaused && !gameOver) ammo.y+=500*Gdx.graphics.getDeltaTime();
 
-		if(!gamePaused && !gameOver) enemy.y-=100*Gdx.graphics.getDeltaTime();
+		if(!gamePaused && !gameOver && !bossMode) enemy.y-=toiletSpeed*Gdx.graphics.getDeltaTime();
 
 		explosionImage=explosionImages[i];
 		i++;
@@ -185,6 +183,19 @@ public class JavaGame extends ApplicationAdapter {
 		}
 
 		collision_check();
+
+		//levels
+		if(score>=30){
+			bossMode=true;
+			enemy.x=9999;
+			enemy.y=9999;
+		}
+		else if(score>=20){
+			toiletSpeed=300;
+		}
+		else if(score>=10){
+			toiletSpeed=200;
+		}
 
 		//game over
 		if(enemy.y<=0) {
