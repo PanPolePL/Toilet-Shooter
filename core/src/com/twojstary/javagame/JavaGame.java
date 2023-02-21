@@ -36,6 +36,7 @@ public class JavaGame extends ApplicationAdapter {
 		if(ammo.x+ammo.width/2>=enemy.x && ammo.x<=enemy.x+enemy.width+ammo.width/2 && ammo.y+ammo.height>=enemy.y) {
 			score++;
 			hitSound.play(1.0f);
+			ammo.x=9999;
 			ammo.y=9999;
 			i=0;
 			explosion.x=enemy.x;
