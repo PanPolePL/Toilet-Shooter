@@ -272,6 +272,7 @@ public class JavaGame extends ApplicationAdapter {
 		enemyImage.dispose();
 		ammoImage.dispose();
 		explosionImage.dispose();
+		bossImage.dispose();
 		font.dispose();
 	}
 }
