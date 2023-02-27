@@ -134,8 +134,8 @@ public class JavaGame extends ApplicationAdapter {
 
 		bossImage = new Texture(Gdx.files.internal("boss.png"));
 		boss = new Rectangle();
-		boss.width=220;
-		boss.height=200;
+		boss.width=120;
+		boss.height=170;
 
 		reset();
 
